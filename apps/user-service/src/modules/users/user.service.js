@@ -1,9 +1,16 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { ApiError } from "@microservices-demo/shared";
+import {
+  ApiError,
+  comparePassword,
+  ConflictError,
+  generateAccessToken,
+  UnauthorizedError,
+} from "@microservices-demo/shared";
 import { HTTP_STATUS } from "@microservices-demo/shared";
 import { USER_MESSAGES } from "./user.constants.js";
 import { toUserResponse } from "./user.mapper.js";
+import { hashPassword } from "@microservices-demo/shared";
 
 export function createUserService(repository) {
   return {
@@ -11,14 +18,10 @@ export function createUserService(repository) {
       const existingUser = await repository.findByEmail(payload.email);
 
       if (existingUser) {
-        throw new ApiError({
-          statusCode: HTTP_STATUS.CONFLICT,
-          message: USER_MESSAGES.USER_ALREADY_EXISTS,
-        });
+        throw new ConflictError(USER_MESSAGES.USER_ALREADY_EXISTS);
       }
 
-      const hashedPassword = await bcrypt.hash(payload.password, 10);
-
+      const hashedPassword = await hashPassword(payload.password);
       const user = await repository.create({
         ...payload,
         password: hashedPassword,
@@ -33,35 +36,23 @@ export function createUserService(repository) {
       const user = await repository.findByEmailForLogin(email);
 
       if (!user) {
-        throw new ApiError({
-          statusCode: HTTP_STATUS.UNAUTHORIZED,
-          message: "Invalid email or password",
-        });
+        throw new UnauthorizedError(USER_MESSAGES.INVALID_CREDENTIALS);
       }
 
       console.log("Login Payload:", payload);
       console.log("User from DB:", user);
       console.log("Stored Password:", user?.password);
 
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = await comparePassword(password, user.password);
 
       if (!isPasswordValid) {
-        throw new ApiError({
-          statusCode: HTTP_STATUS.UNAUTHORIZED,
-          message: "Invalid email or password",
-        });
+        throw new UnauthorizedError(USER_MESSAGES.INVALID_CREDENTIALS);
       }
 
-      const accessToken = jwt.sign(
-        {
-          id: user._id,
-          email: user.email,
-        },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: process.env.JWT_EXPIRES_IN,
-        },
-      );
+      const accessToken = generateAccessToken({
+        userId: user._id.toString(),
+        email: user.email,
+      });
 
       return {
         user: toUserResponse(user),
