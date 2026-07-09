@@ -1,0 +1,21 @@
+{
+  "name": "@microservices-demo/product-service",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon",
+    "start": "node src/server.js",
+    "build": "echo \"No build yet\"",
+    "lint": "eslint src",
+    "test": "echo \"No tests yet\"",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
