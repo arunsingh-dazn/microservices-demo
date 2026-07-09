@@ -1,14 +1,10 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import {
-  ApiError,
   comparePassword,
   ConflictError,
   generateAccessToken,
   NotFoundError,
   UnauthorizedError,
 } from "@microservices-demo/shared";
-import { HTTP_STATUS } from "@microservices-demo/shared";
 import { USER_MESSAGES } from "./user.constants.js";
 import { toUserResponse } from "./user.mapper.js";
 import { hashPassword } from "@microservices-demo/shared";
