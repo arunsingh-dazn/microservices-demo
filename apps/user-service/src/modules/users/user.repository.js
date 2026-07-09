@@ -29,5 +29,13 @@ export function createUserRepository() {
         },
       );
     },
+
+    async findAll() {
+      return User.find().sort({ createdAt: -1 });
+    },
+
+    async deleteById(userId) {
+      return User.findByIdAndDelete(userId);
+    },
   };
 }

@@ -77,5 +77,37 @@ export function createUserController(service) {
         next(error);
       }
     },
+
+    getUsers: async (req, res, next) => {
+      try {
+        const users = await service.getUsers();
+
+        return res.json(
+          new ApiResponse({
+            message: USER_MESSAGES.USERS_FETCH_SUCCESS,
+            data: users,
+          }),
+        );
+      } catch (error) {
+        next(error);
+      }
+    },
+
+    deleteUser: async (req, res, next) => {
+      try {
+        console.log(req.params);
+
+        await service.deleteUser(req.params.id);
+
+        return res.json(
+          new ApiResponse({
+            statusCode: HTTP_STATUS.OK,
+            message: USER_MESSAGES.USER_DELETE_SUCCESS,
+          }),
+        );
+      } catch (error) {
+        next(error);
+      }
+    },
   };
 }

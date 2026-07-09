@@ -2,6 +2,7 @@ import { Router } from "express";
 import { validate } from "../../middleware/validate.middleware.js";
 import { loginUserSchema, refreshTokenSchema, registerUserSchema } from "./user.schema.js";
 import { authenticate } from "../../middleware/authenticate.middleware.js";
+import { authorize } from "../../middleware/authorize.middleware.js";
 
 export function createUserRouter(controller) {
   const router = Router();
@@ -11,6 +12,9 @@ export function createUserRouter(controller) {
   router.get("/me", authenticate, controller.getProfile);
   router.post("/refresh-token", validate(refreshTokenSchema), controller.refreshToken);
   router.post("/logout", authenticate, controller.logout);
+
+  router.get("/", authenticate, authorize("ADMIN"), controller.getUsers);
+  router.delete("/:id", authenticate, authorize("ADMIN"), controller.deleteUser);
 
   return router;
 }

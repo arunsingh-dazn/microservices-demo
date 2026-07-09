@@ -1,4 +1,5 @@
 import {
+  BadRequestError,
   comparePassword,
   ConflictError,
   generateAccessToken,
@@ -10,6 +11,7 @@ import {
 import { USER_MESSAGES } from "./user.constants.js";
 import { toUserResponse } from "./user.mapper.js";
 import { hashPassword } from "@microservices-demo/shared";
+import mongoose from "mongoose";
 
 export function createUserService(repository) {
   return {
@@ -108,6 +110,24 @@ export function createUserService(repository) {
       }
 
       await repository.updateRefreshToken(userId, null);
+    },
+
+    async getUsers() {
+      const users = await repository.findAll();
+
+      return users.map(toUserResponse);
+    },
+
+    async deleteUser(userId) {
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new BadRequestError("Invalid user id.");
+      }
+
+      const deletedUser = await repository.deleteById(userId);
+
+      if (!deletedUser) {
+        throw new NotFoundError(USER_MESSAGES.USER_NOT_FOUND);
+      }
     },
   };
 }

@@ -5,4 +5,6 @@ export const USER_MESSAGES = {
   USER_NOT_FOUND: "User not found.",
   INVALID_CREDENTIALS: "Invalid email or password.",
   LOGOUT_SUCCESS: "Logged out successfully.",
+  USERS_FETCH_SUCCESS: "Users fetched successfully.",
+  USER_DELETE_SUCCESS: "User deleted successfully.",
 };
