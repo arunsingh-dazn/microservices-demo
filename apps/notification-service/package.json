@@ -1,0 +1,14 @@
+{
+  "name": "@microservices-demo/notification-service",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@microservices-demo/shared": "*"
+  }
+}

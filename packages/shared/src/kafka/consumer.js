@@ -1,7 +1,13 @@
 import { getKafka } from "./client.js";
 
-export function createConsumer(groupId) {
-  return getKafka.consumer({
+export async function createConsumer(groupId) {
+  const consumer = getKafka().consumer({
     groupId,
   });
+
+  await consumer.connect();
+
+  console.log("✅ Kafka Consumer Connected");
+
+  return consumer;
 }
