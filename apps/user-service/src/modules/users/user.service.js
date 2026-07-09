@@ -12,6 +12,7 @@ import { USER_MESSAGES } from "./user.constants.js";
 import { toUserResponse } from "./user.mapper.js";
 import { hashPassword } from "@microservices-demo/shared";
 import mongoose from "mongoose";
+import { publishEvent, TOPICS } from "@microservices-demo/shared";
 
 export function createUserService(repository) {
   return {
@@ -26,6 +27,14 @@ export function createUserService(repository) {
       const user = await repository.create({
         ...payload,
         password: hashedPassword,
+      });
+
+      await publishEvent(TOPICS.USER_CREATED, {
+        userId: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        createdAt: user.createdAt,
       });
 
       return toUserResponse(user);

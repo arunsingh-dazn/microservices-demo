@@ -171,3 +171,41 @@ Run:
 Commit with a conventional message, for example:
 
 git commit -m "feat(shared): add error handling utilities"
+
+======================
+
+User Service v1.0
+──────────────────────────────────────────
+
+Authentication
+✔ Register
+✔ Login
+✔ Refresh Token
+✔ Logout
+✔ JWT
+✔ Password Hashing
+✔ Authentication Middleware
+
+Authorization
+✔ RBAC
+
+User APIs
+✔ GET /me
+✔ GET /users
+✔ GET /users/:id
+✔ PATCH /users/:id
+✔ DELETE /users/:id
+
+Infrastructure
+✔ Clean Architecture
+✔ Repository Pattern
+✔ Service Layer
+✔ Controller Layer
+✔ Validation
+✔ Shared Package
+✔ Error Handling
+✔ TurboRepo
+✔ MongoDB
+✔ ESLint
+✔ Prettier
+✔ Husky
