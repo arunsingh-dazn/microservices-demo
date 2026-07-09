@@ -5,6 +5,7 @@ import {
   comparePassword,
   ConflictError,
   generateAccessToken,
+  NotFoundError,
   UnauthorizedError,
 } from "@microservices-demo/shared";
 import { HTTP_STATUS } from "@microservices-demo/shared";
@@ -58,6 +59,15 @@ export function createUserService(repository) {
         user: toUserResponse(user),
         accessToken,
       };
+    },
+    async getProfile(userId) {
+      const user = await repository.findById(userId);
+
+      if (!user) {
+        throw new NotFoundError(USER_MESSAGES.USER_NOT_FOUND);
+      }
+
+      return toUserResponse(user);
     },
   };
 }

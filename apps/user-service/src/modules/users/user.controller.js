@@ -33,5 +33,20 @@ export function createUserController(service) {
         next(err);
       }
     },
+
+    getProfile: async (req, res, next) => {
+      try {
+        const user = await service.getProfile(req.user.userId);
+
+        return res.json(
+          new ApiResponse({
+            message: "Profile fetched successfully.",
+            data: user,
+          }),
+        );
+      } catch (error) {
+        next(error);
+      }
+    },
   };
 }
