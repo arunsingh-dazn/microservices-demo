@@ -1,0 +1,12 @@
+{
+  "name": "@microservices-demo/order-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "@microservices-demo/shared": "*"
+  }
+}

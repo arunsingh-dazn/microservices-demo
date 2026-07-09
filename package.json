@@ -16,7 +16,8 @@
     "format:check": "prettier . --check",
     "test": "turbo run test",
     "clean": "turbo run clean",
-    "prepare": "husky"
+    "prepare": "husky",
+    "generate:service": "node scripts/generate-service.js"
   },
   "lint-staged": {
     "*.{js,mjs,cjs,json,md}": [
