@@ -109,5 +109,35 @@ export function createUserController(service) {
         next(error);
       }
     },
+
+    getUserById: async (req, res, next) => {
+      try {
+        const user = await service.getUserById(req.params.id);
+
+        return res.json(
+          new ApiResponse({
+            message: USER_MESSAGES.USER_FETCH_SUCCESS,
+            data: user,
+          }),
+        );
+      } catch (error) {
+        next(error);
+      }
+    },
+
+    updateUser: async (req, res, next) => {
+      try {
+        const user = await service.updateUser(req.params.id, req.body);
+
+        return res.json(
+          new ApiResponse({
+            message: USER_MESSAGES.USER_UPDATED_SUCCESS,
+            data: user,
+          }),
+        );
+      } catch (error) {
+        next(error);
+      }
+    },
   };
 }

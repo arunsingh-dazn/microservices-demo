@@ -129,5 +129,25 @@ export function createUserService(repository) {
         throw new NotFoundError(USER_MESSAGES.USER_NOT_FOUND);
       }
     },
+
+    async getUserById(userId) {
+      const user = await repository.findById(userId);
+
+      if (!user) {
+        throw new NotFoundError(USER_MESSAGES.USER_NOT_FOUND);
+      }
+
+      return toUserResponse(user);
+    },
+
+    async updateUser(userId, payload) {
+      const user = await repository.updateById(userId, payload);
+
+      if (!user) {
+        throw new NotFoundError(USER_MESSAGES.USER_NOT_FOUND);
+      }
+
+      return toUserResponse(user);
+    },
   };
 }

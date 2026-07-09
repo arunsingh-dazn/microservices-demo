@@ -19,3 +19,12 @@ export const loginUserSchema = z.object({
 export const refreshTokenSchema = z.object({
   refreshToken: z.string().trim().min(1, "Refresh token is required"),
 });
+
+export const updateUserSchema = z
+  .object({
+    firstName: z.string().trim().min(2).max(50).optional(),
+    lastName: z.string().trim().min(2).max(50).optional(),
+  })
+  .refine((data) => data.firstName !== undefined || data.lastName !== undefined, {
+    message: "At least one field must be provided for update.",
+  });

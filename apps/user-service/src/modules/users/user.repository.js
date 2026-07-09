@@ -37,5 +37,12 @@ export function createUserRepository() {
     async deleteById(userId) {
       return User.findByIdAndDelete(userId);
     },
+
+    async updateById(userId, payload) {
+      return User.findByIdAndUpdate(userId, payload, {
+        new: true,
+        runValidators: true,
+      });
+    },
   };
 }

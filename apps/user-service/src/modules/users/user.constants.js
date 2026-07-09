@@ -7,4 +7,5 @@ export const USER_MESSAGES = {
   LOGOUT_SUCCESS: "Logged out successfully.",
   USERS_FETCH_SUCCESS: "Users fetched successfully.",
   USER_DELETE_SUCCESS: "User deleted successfully.",
+  USER_UPDATED_SUCCESS: "User updated successfully.",
 };

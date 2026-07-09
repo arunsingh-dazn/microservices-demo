@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { validate } from "../../middleware/validate.middleware.js";
-import { loginUserSchema, refreshTokenSchema, registerUserSchema } from "./user.schema.js";
+import {
+  loginUserSchema,
+  refreshTokenSchema,
+  registerUserSchema,
+  updateUserSchema,
+} from "./user.schema.js";
 import { authenticate } from "../../middleware/authenticate.middleware.js";
 import { authorize } from "../../middleware/authorize.middleware.js";
 
@@ -15,6 +20,14 @@ export function createUserRouter(controller) {
 
   router.get("/", authenticate, authorize("ADMIN"), controller.getUsers);
   router.delete("/:id", authenticate, authorize("ADMIN"), controller.deleteUser);
+  router.get("/:id", authenticate, authorize("ADMIN"), controller.getUserById);
+  router.patch(
+    "/:id",
+    authenticate,
+    authorize("ADMIN"),
+    validate(updateUserSchema),
+    controller.updateUser,
+  );
 
   return router;
 }
