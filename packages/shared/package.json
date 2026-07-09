@@ -1,0 +1,16 @@
+{
+  "name": "@microservices-demo/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./src/index.js",
+  "scripts": {
+    "build": "echo \"Shared Build\"",
+    "lint": "echo \"Shared Lint\"",
+    "test": "echo \"Shared Test\"",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "winston": "^3.19.0",
+    "zod": "^4.4.3"
+  }
+}

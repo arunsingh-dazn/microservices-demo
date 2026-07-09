@@ -1,0 +1,47 @@
+{
+  "name": "microservices-demo",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@11.3.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "test": "turbo run test",
+    "clean": "turbo run clean",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,json,md}": [
+      "prettier --write"
+    ],
+    "apps/**/*.js": [
+      "eslint --fix"
+    ],
+    "packages/**/*.js": [
+      "eslint --fix"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0",
+    "globals": "^17.7.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.0.8",
+    "prettier": "^3.9.4",
+    "turbo": "^2.10.4"
+  },
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
+  }
+}

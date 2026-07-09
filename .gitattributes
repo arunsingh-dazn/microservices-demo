@@ -1,0 +1,31 @@
+# Auto detect text files and normalize line endings
+* text=auto eol=lf
+
+# JavaScript
+*.js text
+*.mjs text
+*.cjs text
+
+# JSON
+*.json text
+
+# Markdown
+*.md text
+
+# YAML
+*.yml text
+*.yaml text
+
+# Shell
+*.sh text eol=lf
+
+# Docker
+Dockerfile text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
