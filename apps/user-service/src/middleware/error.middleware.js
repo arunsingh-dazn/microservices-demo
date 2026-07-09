@@ -13,12 +13,17 @@ export function errorMiddleware(err, req, res, next) {
   }
 
   if (err instanceof ApiError) {
-    return res.status(err.statusCode).json({
+    const response = {
       success: false,
       statusCode: err.statusCode,
       message: err.message,
-      details: err.details,
-    });
+    };
+
+    if (err.details) {
+      response.details = err.details;
+    }
+
+    return res.status(err.statusCode).json(response);
   }
 
   console.error(err);

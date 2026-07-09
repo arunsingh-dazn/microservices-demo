@@ -10,6 +10,10 @@ export function createUserRepository() {
       return User.findOne({ email });
     },
 
+    async findByEmailForLogin(email) {
+      return User.findOne({ email }).select("+password");
+    },
+
     async findById(id) {
       return User.findById(id);
     },

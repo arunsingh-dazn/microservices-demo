@@ -1,10 +1,12 @@
 import { ApiError } from "./ApiError.js";
+import { HTTP_STATUS } from "../constants/http-status.js";
 
 export class NotFoundError extends ApiError {
-  constructor(resource = "Resource") {
+  constructor(message = "Resource not found", details) {
     super({
-      statusCode: 404,
-      message: `${resource} not found`,
+      statusCode: HTTP_STATUS.NOT_FOUND,
+      message,
+      details,
     });
   }
 }

@@ -18,5 +18,20 @@ export function createUserController(service) {
         next(error);
       }
     },
+
+    login: async (req, res, next) => {
+      try {
+        const result = await service.login(req.body);
+
+        return res.json(
+          new ApiResponse({
+            message: "Login Successful",
+            data: result,
+          }),
+        );
+      } catch (err) {
+        next(err);
+      }
+    },
   };
 }
