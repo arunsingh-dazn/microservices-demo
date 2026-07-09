@@ -17,5 +17,17 @@ export function createUserRepository() {
     async findById(id) {
       return User.findById(id);
     },
+
+    async updateRefreshToken(userId, refreshToken) {
+      return User.findByIdAndUpdate(
+        userId,
+        {
+          refreshToken,
+        },
+        {
+          new: true,
+        },
+      );
+    },
   };
 }

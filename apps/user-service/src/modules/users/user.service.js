@@ -2,8 +2,10 @@ import {
   comparePassword,
   ConflictError,
   generateAccessToken,
+  generateRefreshToken,
   NotFoundError,
   UnauthorizedError,
+  verifyRefreshToken,
 } from "@microservices-demo/shared";
 import { USER_MESSAGES } from "./user.constants.js";
 import { toUserResponse } from "./user.mapper.js";
@@ -49,11 +51,19 @@ export function createUserService(repository) {
       const accessToken = generateAccessToken({
         userId: user._id.toString(),
         email: user.email,
+        role: user.role,
       });
+
+      const refreshToken = generateRefreshToken({
+        userId: user._id.toString(),
+      });
+
+      await repository.updateRefreshToken(user._id, refreshToken);
 
       return {
         user: toUserResponse(user),
         accessToken,
+        refreshToken,
       };
     },
     async getProfile(userId) {
@@ -64,6 +74,30 @@ export function createUserService(repository) {
       }
 
       return toUserResponse(user);
+    },
+
+    async refreshToken(token) {
+      const payload = verifyRefreshToken(token);
+
+      const user = await repository.findById(payload.userId);
+
+      if (!user) {
+        throw new UnauthorizedError(USER_MESSAGES.INVALID_REFRESH_TOKEN);
+      }
+
+      if (user.refreshToken !== token) {
+        throw new UnauthorizedError(USER_MESSAGES.INVALID_REFRESH_TOKEN);
+      }
+
+      const accessToken = generateAccessToken({
+        userId: user._id.toString(),
+        email: user.email,
+        role: user.role,
+      });
+
+      return {
+        accessToken,
+      };
     },
   };
 }

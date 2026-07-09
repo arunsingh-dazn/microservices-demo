@@ -48,5 +48,20 @@ export function createUserController(service) {
         next(error);
       }
     },
+
+    refreshToken: async (req, res, next) => {
+      try {
+        const result = await service.refreshToken(req.body.refreshToken);
+
+        return res.json(
+          new ApiResponse({
+            message: "Access token refreshed successfully.",
+            data: result,
+          }),
+        );
+      } catch (error) {
+        next(error);
+      }
+    },
   };
 }
