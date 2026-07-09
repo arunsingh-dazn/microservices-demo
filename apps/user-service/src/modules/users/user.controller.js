@@ -63,5 +63,19 @@ export function createUserController(service) {
         next(error);
       }
     },
+
+    logout: async (req, res, next) => {
+      try {
+        await service.logout(req.user.userId);
+
+        return res.json(
+          new ApiResponse({
+            message: USER_MESSAGES.LOGOUT_SUCCESS,
+          }),
+        );
+      } catch (error) {
+        next(error);
+      }
+    },
   };
 }

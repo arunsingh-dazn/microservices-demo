@@ -5,21 +5,23 @@ export function authenticate(req, res, next) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      throw new UnauthorizedError("Authorization header is missing.");
+      throw new UnauthorizedError("Authorization header is required.");
     }
 
-    const [type, token] = authHeader.split(" ");
+    const [scheme, token] = authHeader.split(" ");
 
-    if (type !== "Bearer" || !token) {
-      throw new UnauthorizedError("Invalid authorization header.");
+    if (scheme !== "Bearer") {
+      throw new UnauthorizedError("Authorization scheme must be Bearer.");
     }
 
-    const payload = verifyAccessToken(token);
+    if (!token) {
+      throw new UnauthorizedError("Access token is required.");
+    }
 
-    req.user = payload;
+    req.user = verifyAccessToken(token);
 
     next();
   } catch (error) {
-    next(new UnauthorizedError("Invalid or expired access token."));
+    next(error);
   }
 }

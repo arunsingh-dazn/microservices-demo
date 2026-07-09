@@ -10,6 +10,7 @@ export function createUserRouter(controller) {
   router.post("/login", validate(loginUserSchema), controller.login);
   router.get("/me", authenticate, controller.getProfile);
   router.post("/refresh-token", validate(refreshTokenSchema), controller.refreshToken);
+  router.post("/logout", authenticate, controller.logout);
 
   return router;
 }

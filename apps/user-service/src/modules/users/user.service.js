@@ -99,5 +99,15 @@ export function createUserService(repository) {
         accessToken,
       };
     },
+
+    async logout(userId) {
+      const user = await repository.findById(userId);
+
+      if (!user) {
+        throw new NotFoundError(USER_MESSAGES.USER_NOT_FOUND);
+      }
+
+      await repository.updateRefreshToken(userId, null);
+    },
   };
 }

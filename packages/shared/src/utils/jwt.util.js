@@ -17,7 +17,15 @@ export function verifyAccessToken(token) {
   try {
     return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
   } catch (error) {
-    throw new UnauthorizedError("Invalid or expired access token.");
+    if (error instanceof jwt.TokenExpiredError) {
+      throw new UnauthorizedError("Access token has expired.");
+    }
+
+    if (error instanceof jwt.JsonWebTokenError) {
+      throw new UnauthorizedError("Invalid access token.");
+    }
+
+    throw error;
   }
 }
 
