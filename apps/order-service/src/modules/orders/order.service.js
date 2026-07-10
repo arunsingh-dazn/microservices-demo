@@ -3,6 +3,7 @@ import { NotFoundError } from "@microservices-demo/shared";
 import { getProductById } from "../../clients/product.client.js";
 import { ORDER_MESSAGES } from "./order.constants.js";
 import { toOrderResponse } from "./order.mapper.js";
+import { publishEvent, TOPICS } from "@microservices-demo/shared";
 
 export function createOrderService(repository) {
   return {
@@ -27,6 +28,17 @@ export function createOrderService(repository) {
         items,
         totalAmount,
       });
+
+      await publishEvent(TOPICS.ORDER_CREATED, {
+        orderId: order._id.toString(),
+        userId: order.userId.toString(),
+        items: order.items,
+        totalAmount: order.totalAmount,
+        status: order.status,
+        createdAt: order.createdAt,
+      });
+
+      console.log("📤 Event published: order.created");
 
       return toOrderResponse(order);
     },

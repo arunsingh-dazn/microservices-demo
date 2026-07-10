@@ -1,10 +1,7 @@
 import "dotenv/config";
-
 import app from "./app.js";
-
 import { logger } from "@microservices-demo/shared";
-
-import { startConsumer } from "./kafka/consumer.js";
+import { startConsumer } from "./kafka/consumers/consumer.js";
 
 const PORT = process.env.PORT;
 
