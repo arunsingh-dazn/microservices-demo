@@ -1,6 +1,17 @@
 import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+
+import { orderRouter } from "./modules/orders/index.js";
+import { errorMiddleware } from "./middleware/error.middleware.js";
 
 const app = express();
+
+app.use(cors());
+app.use(helmet());
+app.use(morgan("dev"));
+app.use(express.json());
 
 app.get("/health", (req, res) => {
   res.json({
@@ -8,5 +19,9 @@ app.get("/health", (req, res) => {
     status: "UP",
   });
 });
+
+app.use("/api/v1/orders", orderRouter);
+
+app.use(errorMiddleware);
 
 export default app;
