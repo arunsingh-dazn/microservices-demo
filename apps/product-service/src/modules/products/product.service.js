@@ -1,4 +1,4 @@
-import { ConflictError, NotFoundError } from "@microservices-demo/shared";
+import { ConflictError, NotFoundError, publishEvent, TOPICS } from "@microservices-demo/shared";
 
 import { PRODUCT_MESSAGES } from "./product.constants.js";
 import { toProductResponse } from "./product.mapper.js";
@@ -13,6 +13,12 @@ export function createProductService(repository) {
       }
 
       const product = await repository.create(payload);
+
+      await publishEvent(TOPICS.PRODUCT_CREATED, {
+        productId: product._id.toString(),
+        sku: product.sku,
+        stock: product.stock,
+      });
 
       return toProductResponse(product);
     },
