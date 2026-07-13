@@ -1,12 +1,32 @@
 {
   "name": "@microservices-demo/shipping-service",
   "version": "1.0.0",
-  "private": true,
+  "description": "",
   "type": "module",
+  "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon",
+    "start": "node src/server.js",
+    "build": "echo \"No build yet\"",
+    "lint": "eslint src",
+    "test": "echo \"No tests yet\"",
+    "clean": "rm -rf dist"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@microservices-demo/shared": "*"
+    "@microservices-demo/shared": "^1.0.0",
+    "bcryptjs": "3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "9.0.3",
+    "mongoose": "^9.7.4",
+    "morgan": "^1.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }

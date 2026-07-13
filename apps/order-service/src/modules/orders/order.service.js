@@ -79,10 +79,22 @@ export function createOrderService(repository) {
     },
 
     async completePayment(orderId) {
-      return repository.updatePaymentStatus(orderId, {
+      const order = await repository.updatePaymentStatus(orderId, {
         status: "CONFIRMED",
         paymentStatus: "COMPLETED",
       });
+
+      await publishEvent(TOPICS.ORDER_CONFIRMED, {
+        orderId: order._id.toString(),
+        userId: order.userId.toString(),
+        totalAmount: order.totalAmount,
+        status: order.status,
+        items: order.items,
+      });
+
+      console.log("📤 ORDER_CONFIRMED Published");
+
+      return order;
     },
   };
 }

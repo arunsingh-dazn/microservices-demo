@@ -28,4 +28,11 @@ export const TOPICS = {
   // Payment Events
   // ==========================
   PAYMENT_COMPLETED: "payment.completed",
+  ORDER_CONFIRMED: "order.confirmed",
+  // ==========================
+  // Shipping Events
+  // ==========================
+  SHIPMENT_CREATED: "shipment.created",
+  SHIPMENT_SHIPPED: "shipment.shipped",
+  SHIPMENT_DELIVERED: "shipment.delivered",
 };
