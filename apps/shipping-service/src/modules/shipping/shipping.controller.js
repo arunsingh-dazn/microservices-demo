@@ -33,5 +33,53 @@ export function createShippingController(service) {
         next(error);
       }
     },
+
+    shipShipment: async (req, res, next) => {
+      try {
+        const shipment = await service.shipShipment(req.params.id);
+
+        return res.status(HTTP_STATUS.OK).json(
+          new ApiResponse({
+            statusCode: HTTP_STATUS.OK,
+            message: "Shipment marked as SHIPPED successfully.",
+            data: shipment,
+          }),
+        );
+      } catch (error) {
+        next(error);
+      }
+    },
+
+    outForDelivery: async (req, res, next) => {
+      try {
+        const shipment = await service.outForDelivery(req.params.id);
+
+        return res.status(HTTP_STATUS.OK).json(
+          new ApiResponse({
+            statusCode: HTTP_STATUS.OK,
+            message: "Shipment marked as OUT_FOR_DELIVERY successfully.",
+            data: shipment,
+          }),
+        );
+      } catch (error) {
+        next(error);
+      }
+    },
+
+    deliverShipment: async (req, res, next) => {
+      try {
+        const shipment = await service.deliverShipment(req.params.id);
+
+        return res.status(HTTP_STATUS.OK).json(
+          new ApiResponse({
+            statusCode: HTTP_STATUS.OK,
+            message: "Shipment marked as DELIVERED successfully.",
+            data: shipment,
+          }),
+        );
+      } catch (error) {
+        next(error);
+      }
+    },
   };
 }

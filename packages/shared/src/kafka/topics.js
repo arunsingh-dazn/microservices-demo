@@ -34,5 +34,6 @@ export const TOPICS = {
   // ==========================
   SHIPMENT_CREATED: "shipment.created",
   SHIPMENT_SHIPPED: "shipment.shipped",
+  SHIPMENT_OUT_FOR_DELIVERY: "shipment.out-for-delivery",
   SHIPMENT_DELIVERED: "shipment.delivered",
 };

@@ -7,5 +7,11 @@ export function createShippingRoutes(controller) {
 
   router.get("/:id", controller.getShipmentById);
 
+  router.patch("/:id/ship", controller.shipShipment);
+
+  router.patch("/:id/out-for-delivery", controller.outForDelivery);
+
+  router.patch("/:id/deliver", controller.deliverShipment);
+
   return router;
 }

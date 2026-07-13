@@ -17,5 +17,21 @@ export function createShippingRepository() {
     findByOrderId(orderId) {
       return Shipment.findOne({ orderId });
     },
+
+    updateStatus(id, status) {
+      return Shipment.findByIdAndUpdate(
+        id,
+        { status },
+        {
+          returnDocument: "after",
+        },
+      );
+    },
+
+    findByTrackingNumber(trackingNumber) {
+      return Shipment.findOne({
+        trackingNumber,
+      });
+    },
   };
 }
