@@ -55,6 +55,10 @@ const orderSchema = new mongoose.Schema(
       enum: Object.values(PAYMENT_STATUS),
       default: PAYMENT_STATUS.PENDING,
     },
+    cancelReason: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,

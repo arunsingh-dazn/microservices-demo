@@ -59,7 +59,7 @@ export function createOrderService(repository) {
       return toOrderResponse(order);
     },
 
-    async cancelOrder(id) {
+    async cancelOrder(id, reason = null) {
       const order = await repository.findById(id);
 
       if (!order) {
@@ -67,6 +67,11 @@ export function createOrderService(repository) {
       }
 
       order.status = "CANCELLED";
+      order.paymentStatus = "NOT_REQUIRED";
+
+      if (reason) {
+        order.cancelReason = reason;
+      }
 
       await order.save();
 
