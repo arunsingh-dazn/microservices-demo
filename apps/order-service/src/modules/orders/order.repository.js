@@ -34,5 +34,18 @@ export function createOrderRepository() {
         returnDocument: "after",
       });
     },
+
+    async cancelOrder(orderId) {
+      return Order.findByIdAndUpdate(
+        orderId,
+        {
+          status: "CANCELLED",
+          paymentStatus: "NOT_REQUIRED",
+        },
+        {
+          returnDocument: "after",
+        },
+      );
+    },
   };
 }
