@@ -7,4 +7,5 @@ export const TOPICS = {
   INVENTORY_RESERVED: "inventory.reserved",
   INVENTORY_RELEASED: "inventory.released",
   INVENTORY_OUT_OF_STOCK: "inventory.out-of-stock",
+  PAYMENT_COMPLETED: "payment.completed",
 };

@@ -1,12 +1,10 @@
 import express from "express";
+import routes from "./routes/index.js";
 
 const app = express();
 
-app.get("/health", (req, res) => {
-  res.json({
-    service: process.env.SERVICE_NAME,
-    status: "UP",
-  });
-});
+app.use(express.json());
+
+app.use("/api/v1", routes);
 
 export default app;

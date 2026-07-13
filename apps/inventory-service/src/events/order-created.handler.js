@@ -19,10 +19,21 @@ export async function handleOrderCreated(order) {
 
     const inventory = await service.reserveStock(item.productId, item.quantity);
 
+    console.log("Publishing INVENTORY_RESERVED:", {
+      orderId: order.orderId,
+      userId: order.userId,
+      totalAmount: order.totalAmount,
+      productId: item.productId,
+    });
+
     await publishEvent(TOPICS.INVENTORY_RESERVED, {
       orderId: order.orderId,
+      userId: order.userId,
+      totalAmount: order.totalAmount,
+
       productId: item.productId,
       quantity: item.quantity,
+
       availableStock: inventory.availableStock,
       reservedStock: inventory.reservedStock,
     });
