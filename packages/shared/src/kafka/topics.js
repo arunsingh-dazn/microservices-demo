@@ -15,6 +15,7 @@ export const TOPICS = {
   // Order Events
   // ==========================
   ORDER_CREATED: "order.created",
+  ORDER_CONFIRMED: "order.confirmed",
 
   // ==========================
   // Inventory Events
@@ -28,7 +29,7 @@ export const TOPICS = {
   // Payment Events
   // ==========================
   PAYMENT_COMPLETED: "payment.completed",
-  ORDER_CONFIRMED: "order.confirmed",
+
   // ==========================
   // Shipping Events
   // ==========================
