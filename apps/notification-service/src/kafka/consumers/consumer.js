@@ -1,18 +1,25 @@
 import { createConsumer, TOPICS } from "@microservices-demo/shared";
+
 import { handleUserCreated } from "../events/user-created.handler.js";
 import { handleOrderCreated } from "../events/order-created.handler.js";
+import { handleShipmentCreated } from "../events/shipment-created.handler.js";
 
 export async function startConsumer() {
   const consumer = await createConsumer("notification-group");
 
   await consumer.subscribe({
     topic: TOPICS.USER_CREATED,
-    fromBeginning: true,
+    fromBeginning: false,
   });
 
   await consumer.subscribe({
     topic: TOPICS.ORDER_CREATED,
-    fromBeginning: true,
+    fromBeginning: false,
+  });
+
+  await consumer.subscribe({
+    topic: TOPICS.SHIPMENT_CREATED,
+    fromBeginning: false,
   });
 
   await consumer.run({
@@ -26,6 +33,10 @@ export async function startConsumer() {
 
         case TOPICS.ORDER_CREATED:
           await handleOrderCreated(payload);
+          break;
+
+        case TOPICS.SHIPMENT_CREATED:
+          await handleShipmentCreated(payload);
           break;
 
         default:

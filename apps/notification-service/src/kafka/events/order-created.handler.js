@@ -1,7 +1,7 @@
 export async function handleOrderCreated(payload) {
   console.log("");
   console.log("================================");
-  console.log("🛒 Order Confirmation Service");
+  console.log("🛒 Order Received Service");
   console.log("================================");
 
   console.log(`📦 Order ID : ${payload.orderId}`);
@@ -10,7 +10,8 @@ export async function handleOrderCreated(payload) {
   console.log(`📋 Status   : ${payload.status}`);
 
   console.log("");
-  console.log("🛍 Ordered Products");
+  console.log("📧 We've received your order.");
+  console.log("📦 We're verifying inventory and processing payment.");
 
   payload.items.forEach((item, index) => {
     console.log(
