@@ -12,12 +12,19 @@ export function createProductService(repository) {
         throw new ConflictError(PRODUCT_MESSAGES.SKU_ALREADY_EXISTS);
       }
 
-      const product = await repository.create(payload);
+      // Extract initial stock
+      const { stock, ...productData } = payload;
 
+      // Save product WITHOUT stock
+      const product = await repository.create(productData);
+
+      console.log("Stock:", stock);
+
+      // Publish event with initial stock
       await publishEvent(TOPICS.PRODUCT_CREATED, {
         productId: product._id.toString(),
         sku: product.sku,
-        stock: product.stock,
+        stock,
       });
 
       return toProductResponse(product);

@@ -10,6 +10,8 @@ export async function handleProductCreated(product) {
   console.log("📦 PRODUCT_CREATED received");
   console.log("===============================");
 
+  console.log("Received Product Event:", product);
+
   await service.createInventory({
     productId: product.productId,
     sku: product.sku,

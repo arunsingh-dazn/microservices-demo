@@ -5,7 +5,7 @@ export function toProductResponse(product) {
     description: product.description,
     sku: product.sku,
     price: product.price,
-    stock: product.stock,
+    // stock: product.stock,
     category: product.category,
     image: product.image,
     status: product.status,
