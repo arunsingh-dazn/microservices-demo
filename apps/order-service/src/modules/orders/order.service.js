@@ -72,5 +72,12 @@ export function createOrderService(repository) {
 
       return toOrderResponse(order);
     },
+
+    async completePayment(orderId) {
+      return repository.updatePaymentStatus(orderId, {
+        status: "CONFIRMED",
+        paymentStatus: "COMPLETED",
+      });
+    },
   };
 }

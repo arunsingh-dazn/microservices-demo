@@ -10,3 +10,5 @@ const service = createOrderService(repository);
 const controller = createOrderController(service);
 
 export const orderRouter = createOrderRoutes(controller);
+
+export default service;

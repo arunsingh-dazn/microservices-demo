@@ -28,5 +28,11 @@ export function createOrderRepository() {
     async deleteById(id) {
       return Order.findByIdAndDelete(id);
     },
+
+    async updatePaymentStatus(orderId, payload) {
+      return Order.findByIdAndUpdate(orderId, payload, {
+        returnDocument: "after",
+      });
+    },
   };
 }
