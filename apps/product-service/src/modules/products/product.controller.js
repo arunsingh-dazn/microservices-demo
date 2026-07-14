@@ -6,7 +6,7 @@ export function createProductController(service) {
   return {
     createProduct: async (req, res, next) => {
       try {
-        const product = await service.createProduct(req.body);
+        const product = await service.createProduct(req.body, req.correlationId);
 
         return res.status(HTTP_STATUS.CREATED).json(
           new ApiResponse({

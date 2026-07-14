@@ -5,7 +5,7 @@ import { toProductResponse } from "./product.mapper.js";
 
 export function createProductService(repository) {
   return {
-    async createProduct(payload) {
+    async createProduct(payload, correlationId) {
       const existingProduct = await repository.findBySku(payload.sku);
 
       if (existingProduct) {
@@ -19,13 +19,18 @@ export function createProductService(repository) {
       const product = await repository.create(productData);
 
       console.log("Stock:", stock);
-
       // Publish event with initial stock
-      await publishEvent(TOPICS.PRODUCT_CREATED, {
-        productId: product._id.toString(),
-        sku: product.sku,
-        stock,
-      });
+      await publishEvent(
+        TOPICS.PRODUCT_CREATED,
+        {
+          productId: product._id.toString(),
+          sku: product.sku,
+          stock,
+        },
+        correlationId,
+      );
+
+      console.log("📤 PRODUCT_CREATED Published");
 
       return toProductResponse(product);
     },
