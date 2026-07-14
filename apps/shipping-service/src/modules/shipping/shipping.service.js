@@ -40,14 +40,18 @@ export function createShippingService(repository) {
         throw new NotFoundError(SHIPPING_MESSAGES.SHIPMENT_NOT_FOUND);
       }
 
-      await publishEvent(TOPICS.SHIPMENT_SHIPPED, {
-        shipmentId: shipment._id.toString(),
-        orderId: shipment.orderId.toString(),
-        userId: shipment.userId.toString(),
-        trackingNumber: shipment.trackingNumber,
-        carrier: shipment.carrier,
-        status: shipment.status,
-      });
+      await publishEvent(
+        TOPICS.SHIPMENT_SHIPPED,
+        {
+          shipmentId: shipment._id.toString(),
+          orderId: shipment.orderId.toString(),
+          userId: shipment.userId.toString(),
+          trackingNumber: shipment.trackingNumber,
+          carrier: shipment.carrier,
+          status: shipment.status,
+        },
+        shipment.correlationId,
+      );
 
       console.log("📤 SHIPMENT_SHIPPED Published");
 
@@ -61,14 +65,18 @@ export function createShippingService(repository) {
         throw new NotFoundError(SHIPPING_MESSAGES.SHIPMENT_NOT_FOUND);
       }
 
-      await publishEvent(TOPICS.SHIPMENT_OUT_FOR_DELIVERY, {
-        shipmentId: shipment._id.toString(),
-        orderId: shipment.orderId.toString(),
-        userId: shipment.userId.toString(),
-        trackingNumber: shipment.trackingNumber,
-        carrier: shipment.carrier,
-        status: shipment.status,
-      });
+      await publishEvent(
+        TOPICS.SHIPMENT_OUT_FOR_DELIVERY,
+        {
+          shipmentId: shipment._id.toString(),
+          orderId: shipment.orderId.toString(),
+          userId: shipment.userId.toString(),
+          trackingNumber: shipment.trackingNumber,
+          carrier: shipment.carrier,
+          status: shipment.status,
+        },
+        shipment.correlationId,
+      );
 
       console.log("📤 SHIPMENT_OUT_FOR_DELIVERY Published");
 
@@ -82,14 +90,18 @@ export function createShippingService(repository) {
         throw new NotFoundError(SHIPPING_MESSAGES.SHIPMENT_NOT_FOUND);
       }
 
-      await publishEvent(TOPICS.SHIPMENT_DELIVERED, {
-        shipmentId: shipment._id.toString(),
-        orderId: shipment.orderId.toString(),
-        userId: shipment.userId.toString(),
-        trackingNumber: shipment.trackingNumber,
-        carrier: shipment.carrier,
-        status: shipment.status,
-      });
+      await publishEvent(
+        TOPICS.SHIPMENT_DELIVERED,
+        {
+          shipmentId: shipment._id.toString(),
+          orderId: shipment.orderId.toString(),
+          userId: shipment.userId.toString(),
+          trackingNumber: shipment.trackingNumber,
+          carrier: shipment.carrier,
+          status: shipment.status,
+        },
+        shipment.correlationId,
+      );
 
       console.log("📤 SHIPMENT_DELIVERED Published");
 

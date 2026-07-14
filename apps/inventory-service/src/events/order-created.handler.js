@@ -10,8 +10,8 @@ export async function handleOrderCreated(order) {
   console.log("");
   console.log("================================");
   console.log("📦 Inventory Service");
-  console.log("Correlation ID:", order.correlationId);
   console.log("================================");
+  console.log("Correlation ID:", order.correlationId);
 
   console.log("Received ORDER_CREATED");
 
@@ -45,6 +45,7 @@ export async function handleOrderCreated(order) {
       );
 
       console.log("📤 INVENTORY_RESERVED Published");
+      return;
     } catch (error) {
       console.log("");
       console.log("================================");
@@ -52,13 +53,17 @@ export async function handleOrderCreated(order) {
       console.log("================================");
       console.log(error.message);
 
-      await publishEvent(TOPICS.INVENTORY_RESERVATION_FAILED, {
-        orderId: order.orderId,
-        userId: order.userId,
-        productId: item.productId,
-        requestedQuantity: item.quantity,
-        reason: error.message,
-      });
+      await publishEvent(
+        TOPICS.INVENTORY_RESERVATION_FAILED,
+        {
+          orderId: order.orderId,
+          userId: order.userId,
+          productId: item.productId,
+          requestedQuantity: item.quantity,
+          reason: error.message,
+        },
+        order.correlationId,
+      );
 
       console.log("📤 INVENTORY_RESERVATION_FAILED Published");
       console.log("================================");
