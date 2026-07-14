@@ -29,6 +29,7 @@ export const TOPICS = {
   // Payment Events
   // ==========================
   PAYMENT_COMPLETED: "payment.completed",
+  PAYMENT_FAILED: "payment.failed",
 
   // ==========================
   // Shipping Events

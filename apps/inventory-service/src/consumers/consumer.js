@@ -2,6 +2,7 @@ import { createConsumer, TOPICS } from "@microservices-demo/shared";
 
 import { handleOrderCreated } from "../events/order-created.handler.js";
 import { handleProductCreated } from "../events/product-created.handler.js";
+import { handlePaymentFailed } from "../events/payment-failed.handler.js";
 
 export async function startConsumer() {
   const consumer = await createConsumer("inventory-group");
@@ -16,6 +17,11 @@ export async function startConsumer() {
     fromBeginning: true,
   });
 
+  await consumer.subscribe({
+    topic: TOPICS.PAYMENT_FAILED,
+    fromBeginning: false,
+  });
+
   await consumer.run({
     eachMessage: async ({ topic, message }) => {
       const payload = JSON.parse(message.value.toString());
@@ -26,6 +32,9 @@ export async function startConsumer() {
           break;
         case TOPICS.PRODUCT_CREATED:
           await handleProductCreated(payload);
+          break;
+        case TOPICS.PAYMENT_FAILED:
+          await handlePaymentFailed(payload);
           break;
 
         default:

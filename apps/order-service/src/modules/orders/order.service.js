@@ -96,5 +96,12 @@ export function createOrderService(repository) {
 
       return order;
     },
+
+    async updateAfterPaymentFailure(orderId) {
+      return repository.updatePaymentStatus(orderId, {
+        status: "CANCELLED",
+        paymentStatus: "FAILED",
+      });
+    },
   };
 }
