@@ -10,6 +10,7 @@ export async function handleOrderCreated(order) {
   console.log("");
   console.log("================================");
   console.log("📦 Inventory Service");
+  console.log("Correlation ID:", order.correlationId);
   console.log("================================");
 
   console.log("Received ORDER_CREATED");
@@ -27,17 +28,21 @@ export async function handleOrderCreated(order) {
         productId: item.productId,
       });
 
-      await publishEvent(TOPICS.INVENTORY_RESERVED, {
-        orderId: order.orderId,
-        userId: order.userId,
-        totalAmount: order.totalAmount,
+      await publishEvent(
+        TOPICS.INVENTORY_RESERVED,
+        {
+          orderId: order.orderId,
+          userId: order.userId,
+          totalAmount: order.totalAmount,
 
-        productId: item.productId,
-        quantity: item.quantity,
+          productId: item.productId,
+          quantity: item.quantity,
 
-        availableStock: inventory.availableStock,
-        reservedStock: inventory.reservedStock,
-      });
+          availableStock: inventory.availableStock,
+          reservedStock: inventory.reservedStock,
+        },
+        order.correlationId,
+      );
 
       console.log("📤 INVENTORY_RESERVED Published");
     } catch (error) {

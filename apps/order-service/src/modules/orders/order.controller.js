@@ -5,7 +5,7 @@ export function createOrderController(service) {
   return {
     createOrder: async (req, res, next) => {
       try {
-        const order = await service.createOrder(req.user.userId, req.body);
+        const order = await service.createOrder(req.user.userId, req.body, req.correlationId);
 
         return res.status(HTTP_STATUS.CREATED).json(
           new ApiResponse({

@@ -5,8 +5,11 @@ import morgan from "morgan";
 
 import routes from "./routes/index.js";
 import { errorMiddleware } from "./middleware/error.middleware.js";
+import { correlationIdMiddleware } from "@microservices-demo/shared";
 
 const app = express();
+app.use(correlationIdMiddleware);
+
 app.get("/health", (req, res) => {
   res.json({
     service: process.env.SERVICE_NAME,

@@ -15,12 +15,15 @@ export async function connectProducer() {
   console.log("✅ Kafka Producer Connected");
 }
 
-export async function publishEvent(topic, payload) {
+export async function publishEvent(topic, payload, correlationId = null) {
   await kafkaProducer.send({
     topic,
     messages: [
       {
-        value: JSON.stringify(payload),
+        value: JSON.stringify({
+          ...payload,
+          correlationId,
+        }),
       },
     ],
   });

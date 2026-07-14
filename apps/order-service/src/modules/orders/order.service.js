@@ -7,7 +7,7 @@ import { publishEvent, TOPICS } from "@microservices-demo/shared";
 
 export function createOrderService(repository) {
   return {
-    async createOrder(userId, payload) {
+    async createOrder(userId, payload, correlationId) {
       const items = [];
       let totalAmount = 0;
 
@@ -29,14 +29,18 @@ export function createOrderService(repository) {
         totalAmount,
       });
 
-      await publishEvent(TOPICS.ORDER_CREATED, {
-        orderId: order._id.toString(),
-        userId: order.userId.toString(),
-        items: order.items,
-        totalAmount: order.totalAmount,
-        status: order.status,
-        createdAt: order.createdAt,
-      });
+      await publishEvent(
+        TOPICS.ORDER_CREATED,
+        {
+          orderId: order._id.toString(),
+          userId: order.userId.toString(),
+          items: order.items,
+          totalAmount: order.totalAmount,
+          status: order.status,
+          createdAt: order.createdAt,
+        },
+        correlationId,
+      );
 
       console.log("📤 Event published: order.created");
 

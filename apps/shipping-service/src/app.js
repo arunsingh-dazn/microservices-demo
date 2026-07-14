@@ -6,6 +6,7 @@ import morgan from "morgan";
 import { errorMiddleware } from "../src/middleware/error.middleware.js";
 
 import routes from "./routes/index.js";
+import { correlationIdMiddleware } from "@microservices-demo/shared";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 app.use(express.json());
+app.use(correlationIdMiddleware);
 
 app.use("/api/v1", routes);
 
