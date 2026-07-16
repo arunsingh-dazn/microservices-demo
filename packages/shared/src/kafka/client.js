@@ -4,10 +4,8 @@ let kafkaClient;
 
 export function getKafka() {
   if (!kafkaClient) {
-    console.log("Kafka Broker:", process.env.KAFKA_BROKER);
-
     kafkaClient = new Kafka({
-      clientId: "microservices-demo",
+      clientId: `${process.env.SERVICE_NAME}`,
       brokers: [process.env.KAFKA_BROKER],
     });
   }

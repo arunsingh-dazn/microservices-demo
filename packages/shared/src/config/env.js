@@ -1,11 +1,16 @@
 import { z } from "zod";
 
-const envSchema = z.object({
-  PORT: z.string(),
-  SERVICE_NAME: z.string(),
-  MONGO_URI: z.string(),
-});
+export function validateEnv({ requireMongo = true } = {}) {
+  const schema = z.object({
+    PORT: z.string(),
+    SERVICE_NAME: z.string(),
 
-export const validateEnv = () => {
-  envSchema.parse(process.env);
-};
+    ...(requireMongo
+      ? {
+          MONGO_URI: z.string(),
+        }
+      : {}),
+  });
+
+  return schema.parse(process.env);
+}

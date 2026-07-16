@@ -1,3 +1,4 @@
+import logger from "../logger/logger.js";
 import { getKafka } from "./client.js";
 
 export async function createConsumer(groupId) {
@@ -7,7 +8,11 @@ export async function createConsumer(groupId) {
 
   await consumer.connect();
 
-  console.log("✅ Kafka Consumer Connected");
+  logger.info({
+    message: "Kafka consumer connected",
+    service: process.env.SERVICE_NAME,
+    groupId,
+  });
 
   return consumer;
 }

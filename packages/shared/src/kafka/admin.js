@@ -1,3 +1,4 @@
+import logger from "../logger/logger.js";
 import { getKafka } from "./client.js";
 import { TOPICS } from "./topics.js";
 
@@ -6,6 +7,11 @@ export async function createTopics() {
 
   try {
     await admin.connect();
+
+    logger.info({
+      message: "Kafka admin connected",
+      service: process.env.SERVICE_NAME,
+    });
 
     const topics = Object.values(TOPICS).map((topic) => ({
       topic,
@@ -19,14 +25,39 @@ export async function createTopics() {
     });
 
     if (created) {
-      console.log("✅ Kafka topics created successfully.");
+      logger.info({
+        message: "Kafka topics created successfully",
+        service: process.env.SERVICE_NAME,
+        topics: Object.values(TOPICS),
+      });
     } else {
-      console.log("ℹ️ Kafka topics already exist.");
+      logger.info({
+        message: "Kafka topics already exist",
+        service: process.env.SERVICE_NAME,
+      });
     }
   } catch (error) {
-    console.error("❌ Failed to create Kafka topics:", error.message);
+    logger.error({
+      message: "Failed to create Kafka topics",
+      service: process.env.SERVICE_NAME,
+      error: error.message,
+    });
+
     throw error;
   } finally {
-    await admin.disconnect();
+    try {
+      await admin.disconnect();
+
+      logger.info({
+        message: "Kafka admin disconnected",
+        service: process.env.SERVICE_NAME,
+      });
+    } catch (error) {
+      logger.error({
+        message: "Failed to disconnect Kafka admin",
+        service: process.env.SERVICE_NAME,
+        error: error.message,
+      });
+    }
   }
 }

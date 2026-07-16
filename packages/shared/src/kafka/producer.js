@@ -1,3 +1,4 @@
+import logger from "../logger/logger.js";
 import { getKafka } from "./client.js";
 
 let kafkaProducer;
@@ -12,14 +13,25 @@ export async function connectProducer() {
 
   connected = true;
 
-  console.log("✅ Kafka Producer Connected");
+  logger.info({
+    message: "Kafka producer connected",
+    service: process.env.SERVICE_NAME,
+  });
 }
 
 export async function publishEvent(topic, payload, correlationId = null) {
+  if (!connected) {
+    await connectProducer();
+  }
+
   await kafkaProducer.send({
     topic,
     messages: [
       {
+        headers: {
+          correlationId: String(correlationId ?? ""),
+          service: String(process.env.SERVICE_NAME),
+        },
         value: JSON.stringify({
           ...payload,
           correlationId,
@@ -28,5 +40,26 @@ export async function publishEvent(topic, payload, correlationId = null) {
     ],
   });
 
-  console.log(`📤 Event published to ${topic}`);
+  logger.info({
+    message: "Kafka event published",
+    service: process.env.SERVICE_NAME,
+    event: topic,
+    correlationId,
+  });
+}
+
+export async function disconnectProducer() {
+  if (!connected || !kafkaProducer) {
+    return;
+  }
+
+  await kafkaProducer.disconnect();
+
+  kafkaProducer = null;
+  connected = false;
+
+  logger.info({
+    message: "Kafka producer disconnected",
+    service: process.env.SERVICE_NAME,
+  });
 }

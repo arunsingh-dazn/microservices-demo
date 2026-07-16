@@ -10,7 +10,7 @@ export async function startConsumer() {
     fromBeginning: false,
   });
 
-  await consumer.run({
+  consumer.run({
     eachMessage: async ({ topic, message }) => {
       const payload = JSON.parse(message.value.toString());
 
@@ -24,4 +24,6 @@ export async function startConsumer() {
       }
     },
   });
+
+  return consumer;
 }
