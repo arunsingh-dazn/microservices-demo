@@ -7,7 +7,7 @@ import app from "./app.js";
 import { connectDB } from "./config/db.js";
 import { connectProducer, createTopics, logger, validateEnv } from "@microservices-demo/shared";
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
 async function bootstrap() {
   try {

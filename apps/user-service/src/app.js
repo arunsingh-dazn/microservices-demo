@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 
-import { userRouter } from "./modules/users/index.js";
+import routes from "./routes/index.js";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import { correlationIdMiddleware } from "@microservices-demo/shared";
 
@@ -22,7 +22,7 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/", routes);
 
 app.use(errorMiddleware);
 
