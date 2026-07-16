@@ -1,19 +1,38 @@
+import { logger, publishEvent, TOPICS } from "@microservices-demo/shared";
+
 import service from "../modules/shipping/index.js";
-import { publishEvent, TOPICS } from "@microservices-demo/shared";
 
 export async function handleOrderConfirmed(order) {
   console.log("");
   console.log("================================");
   console.log("🚚 Shipping Service");
   console.log("================================");
-  console.log("Correlation ID:", order.correlationId);
 
-  console.log(`Creating Shipment for Order ${order.orderId}`);
+  logger.info({
+    message: "Received ORDER_CONFIRMED",
+    service: "shipping-service",
+    event: "ORDER_CONFIRMED",
+    correlationId: order.correlationId,
+    orderId: order.orderId,
+    userId: order.userId,
+  });
 
   const shipment = await service.createShipment({
     orderId: order.orderId,
     userId: order.userId,
     correlationId: order.correlationId,
+  });
+
+  logger.info({
+    message: "Shipment created successfully",
+    service: "shipping-service",
+    event: "SHIPMENT_CREATED",
+    correlationId: order.correlationId,
+    shipmentId: shipment._id.toString(),
+    orderId: shipment.orderId.toString(),
+    userId: shipment.userId.toString(),
+    carrier: shipment.carrier,
+    trackingNumber: shipment.trackingNumber,
   });
 
   await publishEvent(
@@ -30,8 +49,16 @@ export async function handleOrderConfirmed(order) {
     order.correlationId,
   );
 
-  console.log("📤 SHIPMENT_CREATED Published");
-  console.log("✅ Shipment Created");
+  logger.info({
+    message: "SHIPMENT_CREATED Published",
+    service: "shipping-service",
+    event: "SHIPMENT_CREATED",
+    correlationId: order.correlationId,
+    shipmentId: shipment._id.toString(),
+    orderId: shipment.orderId.toString(),
+    userId: shipment.userId.toString(),
+  });
+
   console.log("================================");
   console.log("");
 }

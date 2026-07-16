@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 
-import { NotFoundError, publishEvent, TOPICS } from "@microservices-demo/shared";
+import { logger, NotFoundError, publishEvent, TOPICS } from "@microservices-demo/shared";
 
 import { SHIPPING_MESSAGES, SHIPPING_STATUS } from "./shipping.constants.js";
 import { toShipmentResponse } from "./shipping.mapper.js";
@@ -40,6 +40,16 @@ export function createShippingService(repository) {
         throw new NotFoundError(SHIPPING_MESSAGES.SHIPMENT_NOT_FOUND);
       }
 
+      logger.info({
+        message: "Shipment status updated",
+        service: "shipping-service",
+        event: "SHIPMENT_SHIPPED",
+        correlationId: shipment.correlationId,
+        shipmentId: shipment._id.toString(),
+        orderId: shipment.orderId.toString(),
+        status: shipment.status,
+      });
+
       await publishEvent(
         TOPICS.SHIPMENT_SHIPPED,
         {
@@ -53,7 +63,14 @@ export function createShippingService(repository) {
         shipment.correlationId,
       );
 
-      console.log("📤 SHIPMENT_SHIPPED Published");
+      logger.info({
+        message: "SHIPMENT_SHIPPED Published",
+        service: "shipping-service",
+        event: "SHIPMENT_SHIPPED",
+        correlationId: shipment.correlationId,
+        shipmentId: shipment._id.toString(),
+        orderId: shipment.orderId.toString(),
+      });
 
       return toShipmentResponse(shipment);
     },
@@ -64,6 +81,16 @@ export function createShippingService(repository) {
       if (!shipment) {
         throw new NotFoundError(SHIPPING_MESSAGES.SHIPMENT_NOT_FOUND);
       }
+
+      logger.info({
+        message: "Shipment is out for delivery",
+        service: "shipping-service",
+        event: "SHIPMENT_OUT_FOR_DELIVERY",
+        correlationId: shipment.correlationId,
+        shipmentId: shipment._id.toString(),
+        orderId: shipment.orderId.toString(),
+        status: shipment.status,
+      });
 
       await publishEvent(
         TOPICS.SHIPMENT_OUT_FOR_DELIVERY,
@@ -78,7 +105,14 @@ export function createShippingService(repository) {
         shipment.correlationId,
       );
 
-      console.log("📤 SHIPMENT_OUT_FOR_DELIVERY Published");
+      logger.info({
+        message: "SHIPMENT_OUT_FOR_DELIVERY Published",
+        service: "shipping-service",
+        event: "SHIPMENT_OUT_FOR_DELIVERY",
+        correlationId: shipment.correlationId,
+        shipmentId: shipment._id.toString(),
+        orderId: shipment.orderId.toString(),
+      });
 
       return toShipmentResponse(shipment);
     },
@@ -89,6 +123,16 @@ export function createShippingService(repository) {
       if (!shipment) {
         throw new NotFoundError(SHIPPING_MESSAGES.SHIPMENT_NOT_FOUND);
       }
+
+      logger.info({
+        message: "Shipment delivered",
+        service: "shipping-service",
+        event: "SHIPMENT_DELIVERED",
+        correlationId: shipment.correlationId,
+        shipmentId: shipment._id.toString(),
+        orderId: shipment.orderId.toString(),
+        status: shipment.status,
+      });
 
       await publishEvent(
         TOPICS.SHIPMENT_DELIVERED,
@@ -103,7 +147,14 @@ export function createShippingService(repository) {
         shipment.correlationId,
       );
 
-      console.log("📤 SHIPMENT_DELIVERED Published");
+      logger.info({
+        message: "SHIPMENT_DELIVERED Published",
+        service: "shipping-service",
+        event: "SHIPMENT_DELIVERED",
+        correlationId: shipment.correlationId,
+        shipmentId: shipment._id.toString(),
+        orderId: shipment.orderId.toString(),
+      });
 
       return toShipmentResponse(shipment);
     },

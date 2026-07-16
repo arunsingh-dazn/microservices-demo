@@ -10,8 +10,14 @@ const logger = winston.createLogger({
     winston.format.errors({
       stack: true,
     }),
-    winston.format.printf(({ timestamp, level, message, stack }) => {
-      return stack ? `[${timestamp}] ${level}: ${stack}` : `[${timestamp}] ${level}: ${message}`;
+    winston.format.printf((info) => {
+      const { timestamp, level, message, stack, ...meta } = info;
+
+      const metadata = Object.keys(meta).length > 0 ? ` ${JSON.stringify(meta)}` : "";
+
+      return stack
+        ? `[${timestamp}] ${level}: ${stack}${metadata}`
+        : `[${timestamp}] ${level}: ${message}${metadata}`;
     }),
   ),
 

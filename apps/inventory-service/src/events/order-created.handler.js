@@ -1,6 +1,6 @@
 import { createInventoryRepository } from "../modules/inventory/inventory.repository.js";
 import { createInventoryService } from "../modules/inventory/inventory.service.js";
-import { publishEvent, TOPICS } from "@microservices-demo/shared";
+import { logger, publishEvent, TOPICS } from "@microservices-demo/shared";
 
 const repository = createInventoryRepository();
 
@@ -11,22 +11,28 @@ export async function handleOrderCreated(order) {
   console.log("================================");
   console.log("📦 Inventory Service");
   console.log("================================");
-  console.log("Correlation ID:", order.correlationId);
 
-  console.log("Received ORDER_CREATED");
+  logger.info({
+    message: "Received ORDER_CREATED",
+    service: "inventory-service",
+    event: "ORDER_CREATED",
+    correlationId: order.correlationId,
+    orderId: order.orderId,
+  });
 
   for (const item of order.items) {
-    console.log(`Reserving ${item.quantity} units for Product ${item.productId}`);
+    logger.info({
+      message: "Reserving stock",
+      service: "inventory-service",
+      event: "STOCK_RESERVATION_STARTED",
+      correlationId: order.correlationId,
+      orderId: order.orderId,
+      productId: item.productId,
+      quantity: item.quantity,
+    });
 
     try {
       const inventory = await service.reserveStock(item.productId, item.quantity);
-
-      console.log("Publishing INVENTORY_RESERVED:", {
-        orderId: order.orderId,
-        userId: order.userId,
-        totalAmount: order.totalAmount,
-        productId: item.productId,
-      });
 
       await publishEvent(
         TOPICS.INVENTORY_RESERVED,
@@ -44,14 +50,19 @@ export async function handleOrderCreated(order) {
         order.correlationId,
       );
 
-      console.log("📤 INVENTORY_RESERVED Published");
-      return;
+      logger.info({
+        message: "INVENTORY_RESERVED Published",
+        service: "inventory-service",
+        event: "INVENTORY_RESERVED",
+        correlationId: order.correlationId,
+        orderId: order.orderId,
+        productId: item.productId,
+      });
     } catch (error) {
       console.log("");
       console.log("================================");
       console.log("❌ Inventory Reservation Failed");
       console.log("================================");
-      console.log(error.message);
 
       await publishEvent(
         TOPICS.INVENTORY_RESERVATION_FAILED,
@@ -65,9 +76,24 @@ export async function handleOrderCreated(order) {
         order.correlationId,
       );
 
-      console.log("📤 INVENTORY_RESERVATION_FAILED Published");
-      console.log("================================");
-      console.log("");
+      logger.error({
+        message: "Inventory reservation failed",
+        service: "inventory-service",
+        event: "INVENTORY_RESERVATION_FAILED",
+        correlationId: order.correlationId,
+        orderId: order.orderId,
+        productId: item.productId,
+        reason: error.message,
+      });
+
+      logger.info({
+        message: "INVENTORY_RESERVATION_FAILED Published",
+        service: "inventory-service",
+        event: "INVENTORY_RESERVATION_FAILED",
+        correlationId: order.correlationId,
+        orderId: order.orderId,
+        productId: item.productId,
+      });
 
       // Don't rethrow the error.
       // We want Kafka to consider the message processed and
@@ -75,7 +101,11 @@ export async function handleOrderCreated(order) {
     }
   }
 
-  console.log("✅ Stock Reserved");
-  console.log("================================");
-  console.log("");
+  logger.info({
+    message: "Stock reserved successfully",
+    service: "inventory-service",
+    event: "STOCK_RESERVED",
+    correlationId: order.correlationId,
+    orderId: order.orderId,
+  });
 }

@@ -1,8 +1,21 @@
+import { logger } from "@microservices-demo/shared";
+
 export async function handleOrderCreated(payload) {
   console.log("");
   console.log("================================");
   console.log("🛒 Order Received Service");
   console.log("================================");
+
+  logger.info({
+    message: "Received ORDER_CREATED",
+    service: "notification-service",
+    event: "ORDER_CREATED",
+    correlationId: payload.correlationId,
+    orderId: payload.orderId,
+    userId: payload.userId,
+    totalAmount: payload.totalAmount,
+    status: payload.status,
+  });
 
   console.log(`📦 Order ID : ${payload.orderId}`);
   console.log(`👤 User ID  : ${payload.userId}`);
@@ -20,6 +33,17 @@ export async function handleOrderCreated(payload) {
   });
 
   console.log("");
+
+  logger.info({
+    message: "Order confirmation notification sent",
+    service: "notification-service",
+    event: "ORDER_CONFIRMATION_SENT",
+    correlationId: payload.correlationId,
+    orderId: payload.orderId,
+    userId: payload.userId,
+    notificationType: "EMAIL",
+  });
+
   console.log("📧 Order Confirmation Email Sent");
 
   console.log("================================");

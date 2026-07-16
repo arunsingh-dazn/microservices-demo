@@ -1,4 +1,5 @@
-import { publishEvent, TOPICS } from "@microservices-demo/shared";
+import { logger, publishEvent, TOPICS } from "@microservices-demo/shared";
+
 import service from "../modules/orders/index.js";
 
 export async function handlePaymentCompleted(event) {
@@ -6,9 +7,16 @@ export async function handlePaymentCompleted(event) {
   console.log("================================");
   console.log("📦 Order Service");
   console.log("================================");
-  console.log("Correlation ID:", event.correlationId);
 
-  console.log(`Payment Completed for Order ${event.orderId}`);
+  logger.info({
+    message: "Received PAYMENT_COMPLETED",
+    service: "order-service",
+    event: "PAYMENT_COMPLETED",
+    correlationId: event.correlationId,
+    orderId: event.orderId,
+    paymentId: event.paymentId,
+    amount: event.amount,
+  });
 
   const order = await service.completePayment(event.orderId);
 
@@ -25,11 +33,25 @@ export async function handlePaymentCompleted(event) {
     event.correlationId,
   );
 
-  console.log("📤 ORDER_CONFIRMED Published");
+  logger.info({
+    message: "ORDER_CONFIRMED Published",
+    service: "order-service",
+    event: "ORDER_CONFIRMED",
+    correlationId: event.correlationId,
+    orderId: order._id.toString(),
+    userId: order.userId.toString(),
+  });
 
-  console.log("✅ Order Updated");
-  console.log("Order Status:", order.status);
-  console.log("Payment Status:", order.paymentStatus);
+  logger.info({
+    message: "Order confirmed successfully",
+    service: "order-service",
+    event: "ORDER_UPDATED",
+    correlationId: event.correlationId,
+    orderId: order._id.toString(),
+    userId: order.userId.toString(),
+    orderStatus: order.status,
+    paymentStatus: order.paymentStatus,
+  });
 
   console.log("================================");
   console.log("");
