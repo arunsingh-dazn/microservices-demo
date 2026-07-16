@@ -18,7 +18,6 @@ export function createProductService(repository) {
       // Save product WITHOUT stock
       const product = await repository.create(productData);
 
-      console.log("Stock:", stock);
       // Publish event with initial stock
       await publishEvent(
         TOPICS.PRODUCT_CREATED,
@@ -29,8 +28,6 @@ export function createProductService(repository) {
         },
         correlationId,
       );
-
-      console.log("📤 PRODUCT_CREATED Published");
 
       return toProductResponse(product);
     },

@@ -1,4 +1,4 @@
-import { NotFoundError } from "@microservices-demo/shared";
+import { logger, NotFoundError } from "@microservices-demo/shared";
 
 import { getProductById } from "../../clients/product.client.js";
 import { ORDER_MESSAGES } from "./order.constants.js";
@@ -41,8 +41,6 @@ export function createOrderService(repository) {
         },
         correlationId,
       );
-
-      console.log("📤 Event published: order.created");
 
       return toOrderResponse(order);
     },

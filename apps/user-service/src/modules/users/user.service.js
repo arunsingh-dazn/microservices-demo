@@ -1,22 +1,25 @@
+import mongoose from "mongoose";
+
 import {
   BadRequestError,
   comparePassword,
   ConflictError,
   generateAccessToken,
   generateRefreshToken,
+  hashPassword,
   NotFoundError,
+  publishEvent,
+  TOPICS,
   UnauthorizedError,
   verifyRefreshToken,
 } from "@microservices-demo/shared";
+
 import { USER_MESSAGES } from "./user.constants.js";
 import { toUserResponse } from "./user.mapper.js";
-import { hashPassword } from "@microservices-demo/shared";
-import mongoose from "mongoose";
-import { publishEvent, TOPICS } from "@microservices-demo/shared";
 
 export function createUserService(repository) {
   return {
-    async register(payload) {
+    async register(payload, correlationId) {
       const existingUser = await repository.findByEmail(payload.email);
 
       if (existingUser) {
@@ -24,18 +27,23 @@ export function createUserService(repository) {
       }
 
       const hashedPassword = await hashPassword(payload.password);
+
       const user = await repository.create({
         ...payload,
         password: hashedPassword,
       });
 
-      await publishEvent(TOPICS.USER_CREATED, {
-        userId: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        createdAt: user.createdAt,
-      });
+      await publishEvent(
+        TOPICS.USER_CREATED,
+        {
+          userId: user._id.toString(),
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          createdAt: user.createdAt,
+        },
+        correlationId,
+      );
 
       return toUserResponse(user);
     },
@@ -48,10 +56,6 @@ export function createUserService(repository) {
       if (!user) {
         throw new UnauthorizedError(USER_MESSAGES.INVALID_CREDENTIALS);
       }
-
-      console.log("Login Payload:", payload);
-      console.log("User from DB:", user);
-      console.log("Stored Password:", user?.password);
 
       const isPasswordValid = await comparePassword(password, user.password);
 
@@ -77,6 +81,7 @@ export function createUserService(repository) {
         refreshToken,
       };
     },
+
     async getProfile(userId) {
       const user = await repository.findById(userId);
 
@@ -127,18 +132,6 @@ export function createUserService(repository) {
       return users.map(toUserResponse);
     },
 
-    async deleteUser(userId) {
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        throw new BadRequestError("Invalid user id.");
-      }
-
-      const deletedUser = await repository.deleteById(userId);
-
-      if (!deletedUser) {
-        throw new NotFoundError(USER_MESSAGES.USER_NOT_FOUND);
-      }
-    },
-
     async getUserById(userId) {
       const user = await repository.findById(userId);
 
@@ -157,6 +150,18 @@ export function createUserService(repository) {
       }
 
       return toUserResponse(user);
+    },
+
+    async deleteUser(userId) {
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new BadRequestError("Invalid user id.");
+      }
+
+      const deletedUser = await repository.deleteById(userId);
+
+      if (!deletedUser) {
+        throw new NotFoundError(USER_MESSAGES.USER_NOT_FOUND);
+      }
     },
   };
 }

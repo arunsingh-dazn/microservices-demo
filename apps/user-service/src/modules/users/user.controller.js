@@ -5,7 +5,7 @@ export function createUserController(service) {
   return {
     register: async (req, res, next) => {
       try {
-        const user = await service.register(req.body);
+        const user = await service.register(req.body, req.correlationId);
 
         return res.status(HTTP_STATUS.CREATED).json(
           new ApiResponse({
@@ -95,8 +95,6 @@ export function createUserController(service) {
 
     deleteUser: async (req, res, next) => {
       try {
-        console.log(req.params);
-
         await service.deleteUser(req.params.id);
 
         return res.json(
