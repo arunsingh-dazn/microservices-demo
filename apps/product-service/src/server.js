@@ -2,6 +2,7 @@ import "dotenv/config";
 
 import app from "./app.js";
 import { connectDB } from "./config/db.js";
+
 import {
   connectProducer,
   createTopics,
@@ -43,7 +44,26 @@ async function bootstrap() {
           service: process.env.SERVICE_NAME,
         });
 
-        await disconnectProducer();
+        try {
+          logger.info({
+            message: "Disconnecting Kafka producer",
+            service: process.env.SERVICE_NAME,
+          });
+
+          await disconnectProducer();
+        } catch (error) {
+          logger.error({
+            message: "Failed to disconnect Kafka producer",
+            service: process.env.SERVICE_NAME,
+            error: error.message,
+            stack: error.stack,
+          });
+        }
+
+        logger.info({
+          message: "Shutdown completed",
+          service: process.env.SERVICE_NAME,
+        });
 
         process.exit(0);
       });

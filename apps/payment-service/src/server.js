@@ -4,6 +4,8 @@ dotenv.config();
 
 import app from "./app.js";
 import { connectDB } from "./config/db.js";
+import { startConsumer } from "./consumers/consumer.js";
+
 import {
   connectProducer,
   createTopics,
@@ -11,7 +13,6 @@ import {
   logger,
   validateEnv,
 } from "@microservices-demo/shared";
-import { startConsumer } from "./consumers/consumer.js";
 
 const PORT = process.env.PORT;
 
@@ -25,7 +26,7 @@ async function bootstrap() {
 
     await connectProducer();
 
-    await startConsumer();
+    const consumer = await startConsumer();
 
     const server = app.listen(PORT, () => {
       logger.info({
@@ -48,7 +49,51 @@ async function bootstrap() {
           service: process.env.SERVICE_NAME,
         });
 
-        await disconnectProducer();
+        // Disconnect Kafka Consumer
+        if (consumer) {
+          try {
+            logger.info({
+              message: "Disconnecting Kafka consumer",
+              service: process.env.SERVICE_NAME,
+            });
+
+            await consumer.disconnect();
+
+            logger.info({
+              message: "Kafka consumer disconnected",
+              service: process.env.SERVICE_NAME,
+            });
+          } catch (error) {
+            logger.error({
+              message: "Failed to disconnect Kafka consumer",
+              service: process.env.SERVICE_NAME,
+              error: error.message,
+              stack: error.stack,
+            });
+          }
+        }
+
+        // Disconnect Kafka Producer
+        try {
+          logger.info({
+            message: "Disconnecting Kafka producer",
+            service: process.env.SERVICE_NAME,
+          });
+
+          await disconnectProducer();
+        } catch (error) {
+          logger.error({
+            message: "Failed to disconnect Kafka producer",
+            service: process.env.SERVICE_NAME,
+            error: error.message,
+            stack: error.stack,
+          });
+        }
+
+        logger.info({
+          message: "Shutdown completed",
+          service: process.env.SERVICE_NAME,
+        });
 
         process.exit(0);
       });

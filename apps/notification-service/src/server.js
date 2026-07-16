@@ -12,7 +12,7 @@ async function bootstrap() {
       requireMongo: false,
     });
 
-    await startConsumer();
+    const consumer = await startConsumer();
 
     const server = app.listen(PORT, () => {
       logger.info({
@@ -29,9 +29,37 @@ async function bootstrap() {
         signal,
       });
 
-      server.close(() => {
+      server.close(async () => {
         logger.info({
           message: "HTTP server closed",
+          service: process.env.SERVICE_NAME,
+        });
+
+        if (consumer) {
+          try {
+            logger.info({
+              message: "Disconnecting Kafka consumer",
+              service: process.env.SERVICE_NAME,
+            });
+
+            await consumer.disconnect();
+
+            logger.info({
+              message: "Kafka consumer disconnected",
+              service: process.env.SERVICE_NAME,
+            });
+          } catch (error) {
+            logger.error({
+              message: "Failed to disconnect Kafka consumer",
+              service: process.env.SERVICE_NAME,
+              error: error.message,
+              stack: error.stack,
+            });
+          }
+        }
+
+        logger.info({
+          message: "Shutdown completed",
           service: process.env.SERVICE_NAME,
         });
 

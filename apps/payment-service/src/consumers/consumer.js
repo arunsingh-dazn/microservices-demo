@@ -1,4 +1,5 @@
 import { createConsumer, TOPICS } from "@microservices-demo/shared";
+
 import { handleInventoryReserved } from "../events/inventory-reserved.handler.js";
 
 export async function startConsumer() {
@@ -9,7 +10,7 @@ export async function startConsumer() {
     fromBeginning: false,
   });
 
-  await consumer.run({
+  consumer.run({
     eachMessage: async ({ topic, message }) => {
       const payload = JSON.parse(message.value.toString());
 
@@ -17,7 +18,12 @@ export async function startConsumer() {
         case TOPICS.INVENTORY_RESERVED:
           await handleInventoryReserved(payload);
           break;
+
+        default:
+          console.log(`Unknown topic: ${topic}`);
       }
     },
   });
+
+  return consumer;
 }

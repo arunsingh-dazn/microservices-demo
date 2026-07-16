@@ -1,46 +1,28 @@
 import { createConsumer, TOPICS } from "@microservices-demo/shared";
 
-import { handleUserCreated } from "../events/user-created.handler.js";
 import { handleOrderCreated } from "../events/order-created.handler.js";
 import { handleShipmentCreated } from "../events/shipment-created.handler.js";
-import { handleShipmentShipped } from "../events/shipment-shipped.handler.js";
-import { handleShipmentOutForDelivery } from "../events/shipment-out-for-delivery.handler.js";
 import { handleShipmentDelivered } from "../events/shipment-delivered.handler.js";
+import { handleShipmentOutForDelivery } from "../events/shipment-out-for-delivery.handler.js";
+import { handleShipmentShipped } from "../events/shipment-shipped.handler.js";
+import { handleUserCreated } from "../events/user-created.handler.js";
 
 export async function startConsumer() {
   const consumer = await createConsumer("notification-group");
 
   await consumer.subscribe({
-    topic: TOPICS.USER_CREATED,
+    topics: [
+      TOPICS.USER_CREATED,
+      TOPICS.ORDER_CREATED,
+      TOPICS.SHIPMENT_CREATED,
+      TOPICS.SHIPMENT_SHIPPED,
+      TOPICS.SHIPMENT_OUT_FOR_DELIVERY,
+      TOPICS.SHIPMENT_DELIVERED,
+    ],
     fromBeginning: false,
   });
 
-  await consumer.subscribe({
-    topic: TOPICS.ORDER_CREATED,
-    fromBeginning: false,
-  });
-
-  await consumer.subscribe({
-    topic: TOPICS.SHIPMENT_CREATED,
-    fromBeginning: false,
-  });
-
-  await consumer.subscribe({
-    topic: TOPICS.SHIPMENT_SHIPPED,
-    fromBeginning: false,
-  });
-
-  await consumer.subscribe({
-    topic: TOPICS.SHIPMENT_OUT_FOR_DELIVERY,
-    fromBeginning: false,
-  });
-
-  await consumer.subscribe({
-    topic: TOPICS.SHIPMENT_DELIVERED,
-    fromBeginning: false,
-  });
-
-  await consumer.run({
+  consumer.run({
     eachMessage: async ({ topic, message }) => {
       const payload = JSON.parse(message.value.toString());
 
@@ -74,4 +56,6 @@ export async function startConsumer() {
       }
     },
   });
+
+  return consumer;
 }
